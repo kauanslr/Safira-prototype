@@ -19,6 +19,7 @@ class Motor:
     # Infrared instance
     infrared = None
 
+
     def __init__(self, pin, infrared_pin, rpi = None):
         self.pin = pin
         self.infrared_pin = infrared_pin
@@ -32,18 +33,20 @@ class Motor:
 
     # Make the motor run
     def run(self):
-        self.status = Status.ON
-        self.export()
         if self.infrared.canRun():
-            self.exportToGPIO()
+            self.status = Status.ON
+        else:
+            self.status = Status.OFF
+            print("MOTOR_PIN: " + str(self.pin) + ", STOP DUE TO INFRARED")
+        self.export()
+        self.exportToGPIO()
 
 
     # Make the motor stop
     def stop(self):
         self.status = Status.OFF
         self.export()
-        if self.infrared.canRun():
-            self.exportToGPIO()
+        self.exportToGPIO()
 
 
     # make the setup of RPi library
@@ -52,12 +55,14 @@ class Motor:
 
     def exportToGPIO(self):
         if self.rpi is not None:
+            print "Exported, and loaded to GPIO"
             self.rpi.gpio.output(self.pin, self.status)
         else:
-            print "Exported,"
+            print "Exported, but not loaded to GPIO"
+        print ""
 
     # export curretn status of motor
     def export(self):
         if main.TESTING:
-            print("PIN: " + str(self.pin) + ", VISION_STATUS: " + str(self.status) + "INFRARED_STATUS: " + str(self.infrared.canRun()))
+            print("PIN: " + str(self.pin) + ", INFRARED_STATUS: " + str(self.infrared.canRun()))
 

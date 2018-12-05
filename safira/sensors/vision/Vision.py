@@ -72,8 +72,8 @@ class Vision:
 
     # Load CASCADE_PATH file into self.cascade
     def loadCascade(self):
-
         self.cascade = cv2.CascadeClassifier(self.CASCADE_PATH)
+        print "Cascade Loaded"
 
     # Get one frame from capture interface
     def grabFrame(self):
@@ -141,8 +141,8 @@ class Vision:
     # Take an action based on
     def takeAction(self, lights):
         if lights is not None:
-            data = self.detectColors(lights)
             print("Founded")
+            data = self.detectColors(lights)
 
             if data["hasRed"] is True:
                 print("Har Red")
@@ -163,15 +163,23 @@ class Vision:
 
     # Start the detection
     def startDetection(self):
-
+        frame_count = 0
         if self.capture is not None:
             while self.run:
+                frame_count = frame_count + 1
+                print ""
+                print "---------------------------------"
+                print "Current Frame: " + str(frame_count)
+                print "---------------------------------"
                 ret, frame = self.grabFrame()
                 gray = self.getGray(frame)
                 objects = self.getObjects(gray)
                 segment = self.getSegment(objects, frame)
 
                 self.takeAction(segment)
+
+                print "---------------------------------"
+                print ""
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     self.run = False
