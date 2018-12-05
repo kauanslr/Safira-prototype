@@ -1,5 +1,5 @@
 from safira.sensors.infrared import Infrared
-from . import Status
+from . import State
 import main
 
 
@@ -10,8 +10,14 @@ class Motor:
     # Motor related infrared pin
     infrared_pin = 0
 
-    # Current status
-    status = Status.ON | Status.OFF
+    # Motor alias for LOG propose
+    alias = None
+
+    # Current state
+    state = State.ON | State.OFF
+
+    # Vision state
+    vision_state = State.ON | State.OFF
 
     # RPi Library
     rpi = None
@@ -20,10 +26,11 @@ class Motor:
     infrared = None
 
 
-    def __init__(self, pin, infrared_pin, rpi = None):
+    def __init__(self, pin, infrared_pin, alias = None):
         self.pin = pin
         self.infrared_pin = infrared_pin
         self.infrared = Infrared.Infrared(self)
+        self.alias = alias
 
     # Set RPi Library into current motor instance including infrated
     def setRpi(self, rpi):
@@ -33,19 +40,20 @@ class Motor:
 
     # Make the motor run
     def run(self):
+        self.vision_state = State.ON
         if self.infrared.canRun():
-            self.status = Status.ON
+            self.state = State.ON
         else:
-            self.status = Status.OFF
-            print("MOTOR_PIN: " + str(self.pin) + ", STOP DUE TO INFRARED")
-        self.export()
+            self.state = State.OFF
+        self.log()
         self.exportToGPIO()
 
 
     # Make the motor stop
     def stop(self):
-        self.status = Status.OFF
-        self.export()
+        self.vision_state = State.OFF
+        self.state = State.OFF
+        self.log()
         self.exportToGPIO()
 
 
@@ -55,14 +63,17 @@ class Motor:
 
     def exportToGPIO(self):
         if self.rpi is not None:
-            print "Exported, and loaded to GPIO"
-            self.rpi.gpio.output(self.pin, self.status)
-        else:
-            print "Exported, but not loaded to GPIO"
-        print ""
+            self.rpi.gpio.output(self.pin, self.state)
 
-    # export curretn status of motor
-    def export(self):
+    # export curretn state of motor
+    def log(self):
         if main.TESTING:
-            print("PIN: " + str(self.pin) + ", INFRARED_STATUS: " + str(self.infrared.canRun()))
+            print("---------------")
+            print("MOTOR - " + str(self.alias))
+            print("----")
+            print("PIN_NUM: " + str(self.pin))
+            print("INFRARED_STATE: " + str(self.infrared.canRun()))
+            print("VISION_STATE: " + str(self.vision_state))
+            print("IS_RASPBERRY: " + str(self.rpi is not None))
+            print("---------------")
 

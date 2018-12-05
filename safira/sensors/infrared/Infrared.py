@@ -1,5 +1,6 @@
 import random
 
+
 class Infrared:
     # Current Control motor
     motor = None
@@ -21,9 +22,8 @@ class Infrared:
     def canRun(self):
         # If RPi library is set, so check with ir hardware if it can run
         if self.rpi is not None:
-            return self.rpi.gpio.input(self.motor.infrared_pin)==True
+            return self.rpi.gpio.input(self.motor.infrared_pin) is True
         # If has not RPi library, so you does not have IR sensor installed, so lets return random states for testing
         else:
             return bool(random.getrandbits(1))
-
 

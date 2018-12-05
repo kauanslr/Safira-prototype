@@ -141,25 +141,25 @@ class Vision:
     # Take an action based on
     def takeAction(self, lights):
         if lights is not None:
-            print("Founded")
+            print("VISION - OBJECT: Found")
             data = self.detectColors(lights)
 
             if data["hasRed"] is True:
-                print("Har Red")
+                print("VISION - COLORS: Har Red")
                 self.car.stop()
 
             elif data["hasGreen"] is True:
+                print("VISION - COLORS: Har Green")
                 self.car.run()
-                print("Har Green")
 
             else:
+                print("VISION - COLORS: Lights are off")
                 self.car.run()
-                print("Lights are off")
 
         # If no lights detected run the car
         else:
+            print("VISION - OBJECT: Not Found")
             self.car.run()
-            print("Not Found")
 
     # Start the detection
     def startDetection(self):

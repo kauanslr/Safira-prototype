@@ -9,10 +9,10 @@ from . import Motor
 class Car:
 
     # Left Motor - Motor Pin, IR Pin, IRTerminal A, IRTerminal B
-    left = Motor.Motor(pin=16, infrared_pin=26)
+    left = Motor.Motor(pin=16, infrared_pin=26, alias='LEFT')
 
     # Right Motor - Motor Pin, IR Pin, IRTerminal A, IRTerminal B
-    right = Motor.Motor(pin=18, infrared_pin=28)
+    right = Motor.Motor(pin=18, infrared_pin=28, alias='RIGHT')
 
     # Vision module
     vision = None
