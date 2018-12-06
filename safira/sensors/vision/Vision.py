@@ -3,6 +3,7 @@ import numpy as np
 from importlib import import_module
 
 import main
+import time
 
 
 # Class Vision
@@ -136,50 +137,83 @@ class Vision:
         has_green = self.trackColor(green_mask)
         has_red = self.trackColor(red_mask)
 
-        return {"hasRed": has_red, "hasGreen": has_green}
+        return has_red, has_green
 
     # Take an action based on
     def takeAction(self, lights):
         if lights is not None:
             print("VISION - OBJECT: Found")
-            data = self.detectColors(lights)
+            has_red, has_green = self.detectColors(lights)
 
-            if data["hasRed"] is True:
-                print("VISION - COLORS: Har Red")
+            if has_red is True:
+                print("VISION - COLORS: Has Red")
                 self.car.stop()
 
-            elif data["hasGreen"] is True:
-                print("VISION - COLORS: Har Green")
+            elif has_green is True:
+                print("VISION - COLORS: Has Green")
                 self.car.run()
 
             else:
-                print("VISION - COLORS: Lights are off")
+                print("VISION - COLORS: Colors not detected")
                 self.car.run()
+
+            return True
 
         # If no lights detected run the car
         else:
             print("VISION - OBJECT: Not Found")
             self.car.run()
+            return False
 
     # Start the detection
     def startDetection(self):
         frame_count = 0
+        founded_times = 0
+        start_time = time.time()
         if self.capture is not None:
             while self.run:
-                frame_count = frame_count + 1
-                print ""
-                print "---------------------------------"
-                print "Current Frame: " + str(frame_count)
-                print "---------------------------------"
                 ret, frame = self.grabFrame()
-                gray = self.getGray(frame)
-                objects = self.getObjects(gray)
-                segment = self.getSegment(objects, frame)
 
-                self.takeAction(segment)
+                if frame is not None:
+                    frame_count = frame_count + 1
+                    print ""
+                    print "---------------------------------"
+                    print "Current Frame: " + str(frame_count)
+                    print "---------------------------------"
+                    gray = self.getGray(frame)
+                    objects = self.getObjects(gray)
+                    segment = self.getSegment(objects, frame)
 
-                print "---------------------------------"
-                print ""
+                    founded = self.takeAction(segment)
+                    founded_times = founded_times + 1 if founded is True else founded_times
+
+                    print "---------------------------------"
+                    print ""
+                else:
+                    self.run = False
+                    f = open("resources/log.txt", "a+")
+                    f.write("---------------------------------\r\n")
+                    f.write("INPUT LOG FOR FILES:\r\n")
+                    f.write("TESTING FILE:" + str(main.TESTING_FILE) + "\r\n")
+                    f.write("CASCADE FILE:" + str(main.CASCADE_LOCATION) + "\r\n")
+                    f.write("\r\n")
+                    f.write("Frame Totals: " + str(frame_count) + "\r\n")
+                    f.write("Found Totals: " + str(founded_times) + "\r\n")
+                    f.write("Time of Execution: " + str((time.time() - start_time)) + "\r\n") # Current time - Start time
+                    f.write("FPS: " + str(frame_count / (time.time() - start_time)) + "\r\n") # Total Frames / Total Time
+                    f.write("---------------------------------\r\n")
+                    f.close()
+                    print ""
+                    print ""
+                    print "---------------------------------"
+                    print "END OF INPUT"
+                    print ""
+                    print "Frame Totals: " + str(frame_count)
+                    print "Found Totals: " + str(founded_times)
+                    print "Time of Execution: " + str((time.time() - start_time)) # Current time - Start time
+                    print "FPS: " + str(frame_count / (time.time() - start_time)) # Total Frames / Total Time
+                    print ""
+                    print "---------------------------------"
 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     self.run = False

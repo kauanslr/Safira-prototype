@@ -1,0 +1,33 @@
+---------------------------------
+INPUT LOG FOR FILES:
+TESTING FILE:/Users/kauansousa/Desktop/Kauan/Safira/resources/test_running.mp4
+CASCADE FILE:/Users/kauansousa/Desktop/Kauan/Safira/resources/cascade.xml
+
+Frame Totals: 170
+Found Totals: 0
+Time of Execution: 12.0480880737
+FPS: 14.1101145178
+Scale Factor: 1.05
+---------------------------------
+---------------------------------
+INPUT LOG FOR FILES:
+TESTING FILE:/Users/kauansousa/Desktop/Kauan/Safira/resources/test_running.mp4
+CASCADE FILE:/Users/kauansousa/Desktop/Kauan/Safira/resources/cascade.xml
+
+Frame Totals: 170
+Found Totals: 19
+Time of Execution: 34.1955461502
+FPS: 4.97140665279
+Scale Factor: 1.02
+---------------------------------
+---------------------------------
+INPUT LOG FOR FILES:
+TESTING FILE:/Users/kauansousa/Desktop/Kauan/Safira/resources/test_running.mp4
+CASCADE FILE:/Users/kauansousa/Desktop/Kauan/Safira/resources/cascade.xml
+
+Frame Totals: 170
+Found Totals: 39
+Time of Execution: 59.9749469757
+FPS: 2.83451650389
+Scale Factor: 1.01
+---------------------------------
